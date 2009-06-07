@@ -1,0 +1,34 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+<fieldset>
+<legend>Pending Matches</legend>
+{% for matchup in matches %}
+<div>
+<form action="/matchup/result" method="post">
+	<input type="hidden" name="match_key" value="{{matchup.key}}" />
+	<button type="submit" name="winner" value="{{matchup.team1.key}}">{{matchup.team1.leader.name}}</button> vs. <button type="submit" name="winner" value="{{matchup.team2.key}}">{{matchup.team2.leader.name}}</button>
+</form>
+</div>
+{% endfor %}
+</fieldset>
+<form method="post">
+<input type="submit" value="Create Matchup" />
+{% for team_group in teams %}
+{% for team in team_group %}
+	<div style="float:left">
+	<div><input type="checkbox" name="versus" value="{{team.key}}" />{{team.leader.name}}</div>
+	<div class="wrapper">
+	{% for teammember in team.teammember_set %}
+		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+	{% endfor %}
+	</div>
+	</div>
+{% endfor %}
+{% endfor %}
+
+</form>
+</body>
+</html>

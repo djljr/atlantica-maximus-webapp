@@ -1,0 +1,7 @@
+<html>
+<body>
+{% for result in matches %}
+<div><a href="/results/detail?match={{result.key}}">{{result.winner.leader.name}} def. {{result.loser.leader.name}}</a></div>
+{% endfor %}
+</body>
+</html>

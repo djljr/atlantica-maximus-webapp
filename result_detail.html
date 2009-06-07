@@ -1,0 +1,24 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+<div style="float:left">
+	<div>{{match.winner.leader.name}}</div>
+	<div class="wrapper">
+	{% for teammember in match.winner.teammember_set %}
+		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+	{% endfor %}
+	</div>
+</div>
+<div style="float:left; font-weight:bold; padding-right: 10px;">def.</div>
+<div style="float:left">
+	<div>{{match.loser.leader.name}}</div>
+	<div class="wrapper">
+	{% for teammember in match.loser.teammember_set %}
+		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+	{% endfor %}
+	</div>
+</div>
+</body>
+</html>

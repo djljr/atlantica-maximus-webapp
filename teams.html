@@ -1,0 +1,98 @@
+<html>
+<head>
+<style type="text/css">
+.wrapper { position: relative; width:230px; height:80px; padding:3px; }
+
+.box {
+	position: absolute;
+	width:75px;
+	height:25px;
+	border:1px solid black
+}
+
+.pos1 { left: 0px; top: 0px; }
+.pos2 { left: 75px; top: 0px; }
+.pos3 { left: 150px; top: 0px; }
+.pos4 { left: 0px; top: 25px; }
+.pos5 { left: 75px; top: 25px; }
+.pos6 { left: 150px; top: 25px; }
+.pos7 { left: 0px; top: 50px; }
+.pos8 { left: 75px; top: 50px; }
+.pos9 { left: 150px; top: 50px; }
+</style>
+</head>
+<body>
+<form method="post">
+	<div>Hero:<select name="hero">
+	{% for merc in heroes %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<div>Pawns:</div>
+	<div><select name="pawn1">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn2">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn3">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<div><select name="pawn4">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn5">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn6">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<div><select name="pawn7">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn8">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn9">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<input type="submit" value="Submit" />
+</form>
+
+{% for team in teams %}
+	<div>{{team.leader.name}}</div>
+	<div class="wrapper">
+	{% for teammember in team.teammember_set %}
+		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+	{% endfor %}
+	</div>
+{% endfor %}
+</html>
+</body>
