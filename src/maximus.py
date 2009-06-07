@@ -34,7 +34,7 @@ class MatchResult(db.Model):
 
 class Index(webapp.RequestHandler):
 	def get(self):
-		path=os.path.join(os.path.dirname(__file__), 'index.html')
+		path=os.path.join(os.path.dirname(__file__), 'templates/index.html')
 		self.response.out.write(template.render(path, {}))
 
 class ResultDetail(webapp.RequestHandler):
@@ -43,7 +43,7 @@ class ResultDetail(webapp.RequestHandler):
 		match = MatchResult.get(result_key)
 
 		model = { 'match': match }
-		path=os.path.join(os.path.dirname(__file__), 'result_detail.html')
+		path=os.path.join(os.path.dirname(__file__), 'templates/result_detail.html')
 		self.response.out.write(template.render(path, model))
 
 class ResultHistory(webapp.RequestHandler):
@@ -51,7 +51,7 @@ class ResultHistory(webapp.RequestHandler):
 		matches = MatchResult.all()
 		model = { 'matches': matches }
 
-		path=os.path.join(os.path.dirname(__file__), 'results.html')
+		path=os.path.join(os.path.dirname(__file__), 'templates/results.html')
 		self.response.out.write(template.render(path, model))
 
 class MatchupResult(webapp.RequestHandler):
@@ -85,7 +85,7 @@ class CreateMatchup(webapp.RequestHandler):
 
 		model = { 'teams': [team_groups[k] for k in sorted(team_groups.keys(), lambda x,y: cmp(x.name, y.name))],
 				  'matches': matches }
-		path=os.path.join(os.path.dirname(__file__), 'matchup.html')
+		path=os.path.join(os.path.dirname(__file__), 'templates/matchup.html')
 		self.response.out.write(template.render(path, model))
 	def post(self):
 		keys = self.request.get_all('versus')
@@ -110,7 +110,7 @@ class CreateTeam(webapp.RequestHandler):
 		pawns = Mercenary.gql("where type = 'Pawn'")
 
 		model = { 'heroes': heroes, 'pawns': pawns, 'mercrange': range(1,7), 'teams': teams }
-		path=os.path.join(os.path.dirname(__file__), 'teams.html')
+		path=os.path.join(os.path.dirname(__file__), 'templates/teams.html')
 		self.response.out.write(template.render(path, model))
 	def post(self):
 		team = Team()
