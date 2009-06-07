@@ -34,7 +34,8 @@ class MatchResult(db.Model):
 
 class Index(webapp.RequestHandler):
 	def get(self):
-		path=os.path.join(os.path.dirname(__file__), 'templates/index.html')
+		path=os.path.join(os.path.dirname(__file__), '../templates/index.html')
+		logging.info(path)
 		self.response.out.write(template.render(path, {}))
 
 class ResultDetail(webapp.RequestHandler):
@@ -43,7 +44,7 @@ class ResultDetail(webapp.RequestHandler):
 		match = MatchResult.get(result_key)
 
 		model = { 'match': match }
-		path=os.path.join(os.path.dirname(__file__), 'templates/result_detail.html')
+		path=os.path.join(os.path.dirname(__file__), '../templates/result_detail.html')
 		self.response.out.write(template.render(path, model))
 
 class ResultHistory(webapp.RequestHandler):
@@ -51,7 +52,7 @@ class ResultHistory(webapp.RequestHandler):
 		matches = MatchResult.all()
 		model = { 'matches': matches }
 
-		path=os.path.join(os.path.dirname(__file__), 'templates/results.html')
+		path=os.path.join(os.path.dirname(__file__), '../templates/results.html')
 		self.response.out.write(template.render(path, model))
 
 class MatchupResult(webapp.RequestHandler):
@@ -59,15 +60,17 @@ class MatchupResult(webapp.RequestHandler):
 		match_key = db.Key(self.request.get('match_key'))
 		match = Matchup.get(match_key)
 
+		logging.info(self.request.get_all('winner'))
 		winner_key = db.Key(self.request.get('winner'))
 		result = MatchResult()
 		if winner_key == match.team1.key():
 			result.winner = match.team1
 			result.loser = match.team2
+		elif winner_key == match.team2.key():
+			result.winner = match.team2
+			result.loser = match.team1
 		else:
-			result.winner = match.team1
-			result.loser = match.team2
-
+			logging.error("could not determine winner key: %s" % winner_key)
 		result.put()
 		match.delete()
 		self.redirect('/matchup')
@@ -85,7 +88,7 @@ class CreateMatchup(webapp.RequestHandler):
 
 		model = { 'teams': [team_groups[k] for k in sorted(team_groups.keys(), lambda x,y: cmp(x.name, y.name))],
 				  'matches': matches }
-		path=os.path.join(os.path.dirname(__file__), 'templates/matchup.html')
+		path=os.path.join(os.path.dirname(__file__), '../templates/matchup.html')
 		self.response.out.write(template.render(path, model))
 	def post(self):
 		keys = self.request.get_all('versus')
@@ -110,7 +113,7 @@ class CreateTeam(webapp.RequestHandler):
 		pawns = Mercenary.gql("where type = 'Pawn'")
 
 		model = { 'heroes': heroes, 'pawns': pawns, 'mercrange': range(1,7), 'teams': teams }
-		path=os.path.join(os.path.dirname(__file__), 'templates/teams.html')
+		path=os.path.join(os.path.dirname(__file__), '../templates/teams.html')
 		self.response.out.write(template.render(path, model))
 	def post(self):
 		team = Team()
