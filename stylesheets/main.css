@@ -4,7 +4,12 @@
 	position: absolute;
 	width:75px;
 	height:25px;
-	border:1px solid black
+	border:1px solid black;
+	font-family: Georgia,
+             "New Century Schoolbook",
+             "Nimbus Roman No9 L",
+             serif;
+	font-size: 10pt;
 }
 
 .pos1 { left: 0px; top: 0px; }
