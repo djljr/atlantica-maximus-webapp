@@ -5,7 +5,7 @@
 	width:75px;
 	height:25px;
 	border:1px solid black;
-	font-family: Georgia,
+	font-family: Times,
              "New Century Schoolbook",
              "Nimbus Roman No9 L",
              serif;
@@ -21,3 +21,5 @@
 .pos7 { left: 0px; top: 50px; }
 .pos8 { left: 75px; top: 50px; }
 .pos9 { left: 150px; top: 50px; }
+
+.tiny { font-size: 8pt; padding-left: 10px; }

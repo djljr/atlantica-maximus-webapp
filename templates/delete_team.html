@@ -1,0 +1,36 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+
+<div style="">
+<div>{{team.leader.name}}</div>
+<div class="wrapper">
+{% for teammember in todelete.teammember_set %}
+	<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+{% endfor %}
+</div>
+</div>
+	
+<form method="post">
+<input type="submit" value="Delete And Reassign Results To Selected" />
+<input type="hidden" name="todelete" value="{{todelete.key}}" />
+{% for team_group in teams %}
+{% for team in team_group %}
+	{% ifnotequal team.key todelete.key %}
+		<div style="float:left" class="{{team.leader.name|lower|cut:" "">
+		<div><input type="radio" name="reassign" value="{{team.key}}" />{{team.leader.name}}</div>
+		<div class="wrapper">
+		{% for teammember in team.teammember_set %}
+			<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+		{% endfor %}
+		</div>
+		</div>
+	{% endifnotequal %}
+{% endfor %}
+{% endfor %}
+
+</form>
+</body>
+</html>

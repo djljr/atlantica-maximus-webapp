@@ -79,16 +79,10 @@ class MatchupResult(webapp.RequestHandler):
 
 class CreateMatchup(webapp.RequestHandler):
 	def get(self):
-		team_groups = { }
 		teams = Team.all()
-		for team in teams:
-			if not team.leader in team_groups:
-				team_groups[team.leader] = []
-			team_groups[team.leader].append(team)
-
 		matches = Matchup.all()
 
-		model = { 'teams': [team_groups[k] for k in sorted(team_groups.keys(), lambda x,y: cmp(x.name, y.name))],
+		model = { 'teams': get_team_groups(teams),
 				  'matches': matches }
 		path=os.path.join(os.path.dirname(__file__), '../templates/matchup.html')
 		self.response.out.write(template.render(path, model))
@@ -107,6 +101,47 @@ class CreateMatchup(webapp.RequestHandler):
 
 		self.redirect('/matchup')
 
+class DeleteTeam(webapp.RequestHandler):
+	def get(self):
+		team_key = db.Key(self.request.get("team"))
+		
+		team = db.get(team_key)
+		teams = Team.gql("where leader = :1", team.leader)
+		
+		model = { 'todelete': team, 'teams': get_team_groups(teams) }
+		path=os.path.join(os.path.dirname(__file__), '../templates/delete_team.html')
+		self.response.out.write(template.render(path, model))
+		
+	def post(self):
+		toreassign_string = self.request.get("reassign")
+		logging.info("toreassign: %s" % toreassign_string)
+		if toreassign_string:
+			todelete_key = db.Key(self.request.get("todelete"))
+			toreassign_key = db.Key(toreassign_string)
+			logging.info("todelete: %s" % todelete_key)
+			
+			if todelete_key != toreassign_key:
+				todelete = Team.get(todelete_key)
+				toreassign = Team.get(toreassign_key)
+				logging.info("keys were not the same")
+				
+				logging.info("leaders: %s == %s", todelete.leader.key(), toreassign.leader.key())
+				if todelete.leader.key() == toreassign.leader.key():
+					logging.info("leaders were the same")
+					won_matches = MatchResult.gql("where winner = :1", todelete)
+					lost_matches = MatchResult.gql("where loser = :1", todelete)
+					for match in won_matches:
+						if match.winner.key() == todelete.key():
+							match.winner = toreassign
+					for match in lost_matches:
+						if match.loser.key() == todelete.key():
+							match.loser = toreassign
+					
+					todelete.delete()
+					
+		self.redirect('/teams') 
+		
+	
 class CreateTeam(webapp.RequestHandler):
 	def get(self):
 		teams = Team.all()
@@ -114,7 +149,7 @@ class CreateTeam(webapp.RequestHandler):
 		heroes = Mercenary.gql("where type = 'Hero'")
 		pawns = Mercenary.gql("where type = 'Pawn'")
 
-		model = { 'heroes': heroes, 'pawns': pawns, 'mercrange': range(1,7), 'teams': teams }
+		model = { 'heroes': heroes, 'pawns': pawns, 'mercrange': range(1,7), 'teams': get_team_groups(teams) }
 		path=os.path.join(os.path.dirname(__file__), '../templates/teams.html')
 		self.response.out.write(template.render(path, model))
 	def post(self):
@@ -167,11 +202,21 @@ application = webapp.WSGIApplication(
                                      [('/', Index),
 									  ('/mercs', CreateMerc),
 									  ('/teams', CreateTeam),
+									  ('/teams/delete', DeleteTeam),
 									  ('/matchup', CreateMatchup),
 									  ('/matchup/result', MatchupResult),
 									  ('/results', ResultHistory),
 									  ('/results/detail', ResultDetail)],
                                      debug=True)
+
+def get_team_groups(teams):
+	team_groups = { }
+	for team in teams:
+		if not team.leader in team_groups:
+			team_groups[team.leader] = []
+		team_groups[team.leader].append(team)
+		
+	return [team_groups[k] for k in sorted(team_groups.keys(), lambda x,y: cmp(x.name, y.name))]
 
 def main():
   run_wsgi_app(application)
