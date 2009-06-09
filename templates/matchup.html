@@ -7,10 +7,19 @@
 <legend>Pending Matches</legend>
 {% for matchup in matches %}
 <div>
-<form action="/matchup/result" method="post">
-	<input type="hidden" name="match_key" value="{{matchup.key}}" />
-	<button type="submit" name="winner" value="{{matchup.team1.key}}">{{matchup.team1.leader.name}}</button> vs. <button type="submit" name="winner" value="{{matchup.team2.key}}">{{matchup.team2.leader.name}}</button>
-</form>
+	<div style="float:left">
+		<form action="/matchup/result" method="post">
+			<input type="hidden" name="match_key" value="{{matchup.key}}" />
+			<button type="submit" name="winner" value="{{matchup.team1.key}}">{{matchup.team1.leader.name}}</button> vs. <button type="submit" name="winner" value="{{matchup.team2.key}}">{{matchup.team2.leader.name}}</button>
+		</form>			
+	</div>
+	<div style="float:left; margin-left:50px;">
+		<form action="/matchup/delete" method="post">
+			<input type="hidden" name="match_key" value="{{matchup.key}}" />
+			<button type="submit">Delete</button>
+		</form>
+	</div>
+
 </div>
 {% endfor %}
 </fieldset>

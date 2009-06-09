@@ -57,6 +57,14 @@ class ResultHistory(webapp.RequestHandler):
 		path=os.path.join(os.path.dirname(__file__), '../templates/results.html')
 		self.response.out.write(template.render(path, model))
 
+class MatchupDelete(webapp.RequestHandler):
+	def post(self):
+		match_key = db.Key(self.request.get('match_key'))
+		match = Matchup.get(match_key)
+		match.delete()
+		
+		self.redirect('/matchup')
+	
 class MatchupResult(webapp.RequestHandler):
 	def post(self):
 		match_key = db.Key(self.request.get('match_key'))
@@ -204,6 +212,7 @@ application = webapp.WSGIApplication(
 									  ('/teams', CreateTeam),
 									  ('/teams/delete', DeleteTeam),
 									  ('/matchup', CreateMatchup),
+									  ('/matchup/delete', MatchupDelete),
 									  ('/matchup/result', MatchupResult),
 									  ('/results', ResultHistory),
 									  ('/results/detail', ResultDetail)],
