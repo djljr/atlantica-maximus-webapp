@@ -18,7 +18,7 @@
 <input type="submit" value="Create Matchup" />
 {% for team_group in teams %}
 {% for team in team_group %}
-	<div style="float:left" class="{{team.leader.name|lower|cut:" "">>
+	<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
 	<div><input type="checkbox" name="versus" value="{{team.key}}" />{{team.leader.name}}</div>
 	<div class="wrapper">
 	{% for teammember in team.teammember_set %}

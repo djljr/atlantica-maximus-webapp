@@ -4,8 +4,8 @@
 </head>
 <body>
 
-<div style="">
-<div>{{team.leader.name}}</div>
+<div class="{{team.leader.name|lower|cut:" "}}">
+<div>{{todelete.leader.name}}</div>
 <div class="wrapper">
 {% for teammember in todelete.teammember_set %}
 	<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
@@ -19,7 +19,7 @@
 {% for team_group in teams %}
 {% for team in team_group %}
 	{% ifnotequal team.key todelete.key %}
-		<div style="float:left" class="{{team.leader.name|lower|cut:" "">
+		<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
 		<div><input type="radio" name="reassign" value="{{team.key}}" />{{team.leader.name}}</div>
 		<div class="wrapper">
 		{% for teammember in team.teammember_set %}
