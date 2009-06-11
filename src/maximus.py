@@ -42,9 +42,9 @@ class BuildWinLoss(webapp.RequestHandler):
 	def post(self):
 		logging.info("Rebuilding win-loss records")
 		batch_size = 10
-		batch = MatchResult.gql("order by __key__ limit %s" % batch_size)
+		batch = MatchResult.gql("order by __key__")
 		
-		query = "where __key__ > :1 order by __key__ limit %s" % batch_size
+		query = "where __key__ > :1 order by __key__"
 		
 		matchups = []
 		for matchup_stats in MatchupStatistics.all():
@@ -52,18 +52,24 @@ class BuildWinLoss(webapp.RequestHandler):
 		db.delete(matchups)
 		
 		total_count = 0
+		total_create = 0
+		total_update = 0
 		batch_count = batch.count()
+		logging.info("new batch size: %s", batch_count)
 		while batch_count > 0:
-			total_count = total_count + batch_count
-			logging.info("stats batch of size %s", batch.count())
-			for match in batch:
-				update_stats(match.winner, match.loser)
-						
-			last_key = batch.fetch(1, batch_count - 1)[0].key()
+			for match in batch.fetch(batch_size):
+				(created, updated) = update_stats(match.winner, match.loser)
+				total_create = total_create + created
+				total_update = total_update + updated
+				total_count = total_count + 1
+			
+			logging.info("so far created %s and updated %s" % (total_create, total_update))
+			last_key = batch.fetch(1, min([batch_size, batch_count]) - 1)[0].key()
 			batch = MatchResult.gql(query, last_key)
 			batch_count = batch.count()
+			logging.info("new batch size: %s", batch_count)
 		
-		self.redirect("/admin?match_count=%s" % total_count)
+		self.redirect("/admin?match_count=%s&created=%s&updated=%s" % (total_count, total_create, total_update))
 		
 class Admin(webapp.RequestHandler):
 	def get(self):
@@ -125,9 +131,7 @@ class MatchupResult(webapp.RequestHandler):
 class CreateMatchup(webapp.RequestHandler):
 	def get(self):
 		teams = Team.all()
-		teams.order("-wins")
 		matches = Matchup.all()
-		matches.order("__key__")
 
 		model = { 'teams': get_team_groups(teams),
 				  'matches': matches }
@@ -278,7 +282,7 @@ def update_stats(winner, loser):
 	    newStats.team2.losses = 1
 	    
 	    db.put([newStats, newStats.team1, newStats.team2])
-	    
+	    return (1, 0)
 	elif existing.count() == 1:
 		oldStats = existing.fetch(1)[0]
 		if oldStats.team1.key() == winner.key():
@@ -291,9 +295,10 @@ def update_stats(winner, loser):
 			oldStats.team1.losses = oldStats.team1.losses + 1
 			
 		db.put([oldStats, oldStats.team1, oldStats.team2])
-		
+		return (0, 1)
 	else:
 		logging.error("unexpected state: %s matchup statistics for the same team pair (expected 1)" % existing.count())
+		return (0, 0)
 		
 def main():
   run_wsgi_app(application)
