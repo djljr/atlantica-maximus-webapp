@@ -47,9 +47,16 @@ class BuildWinLoss(webapp.RequestHandler):
 		query = "where __key__ > :1 order by __key__"
 		
 		matchups = []
+		teams = []
 		for matchup_stats in MatchupStatistics.all():
 			matchups.append(matchup_stats)
+		for team in Team.all():
+			team.wins = 0
+			team.losses = 0
+			teams.append(team)
+			
 		db.delete(matchups)
+		db.put(teams)
 		
 		total_count = 0
 		total_create = 0
@@ -269,6 +276,7 @@ def get_team_groups(teams):
 
 def update_stats(winner, loser):
 	existing = MatchupStatistics.gql("where team1 in (:1, :2) and team2 in (:2, :1)", winner.key(), loser.key())
+	stats = None
 	if existing.count() == 0:
 	    newStats = MatchupStatistics()
 	    newStats.team1 = winner
@@ -276,30 +284,34 @@ def update_stats(winner, loser):
 	    newStats.team1_wins = 1
 	    newStats.team2_wins = 0
 	    
-	    newStats.team1.wins = 1
-	    newStats.team1.losses = 0
-	    newStats.team2.wins = 0
-	    newStats.team2.losses = 1
+	    update_win_loss_records(winner, loser)
 	    
-	    db.put([newStats, newStats.team1, newStats.team2])
+	    db.put([newStats, winner, loser])
 	    return (1, 0)
 	elif existing.count() == 1:
 		oldStats = existing.fetch(1)[0]
 		if oldStats.team1.key() == winner.key():
 			oldStats.team1_wins = oldStats.team1_wins + 1
-			oldStats.team1.wins = oldStats.team1.wins + 1
-			oldStats.team2.losses = oldStats.team2.losses + 1
 		else:
 			oldStats.team2_wins = oldStats.team2_wins + 1
-			oldStats.team2.wins = oldStats.team2.wins + 1
-			oldStats.team1.losses = oldStats.team1.losses + 1
 			
-		db.put([oldStats, oldStats.team1, oldStats.team2])
+		update_win_loss_records(winner, loser)
+		db.put([oldStats, winner, loser])
 		return (0, 1)
 	else:
 		logging.error("unexpected state: %s matchup statistics for the same team pair (expected 1)" % existing.count())
 		return (0, 0)
+def update_win_loss_records(winner, loser):
+	if winner.wins:
+		winner.wins = winner.wins + 1
+	else:
+		winner.wins = 1
 		
+	if loser.losses:
+		loser.losses = loser.losses + 1
+	else:
+		loser.losses = 1
+			
 def main():
   run_wsgi_app(application)
 
