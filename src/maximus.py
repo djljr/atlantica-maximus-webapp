@@ -4,6 +4,7 @@ import cgi
 import os
 import logging
 
+from google.appengine.api import memcache
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -220,6 +221,8 @@ class CreateTeam(webapp.RequestHandler):
 				current.merc = merc[0]
 				current.location = i
 				current.put()
+				
+		memcache.delete("team_groups")
 		self.redirect('/teams')
 
 
@@ -250,6 +253,13 @@ class CreateMerc(webapp.RequestHandler):
 
 		self.redirect('/mercs')
 
+class MemCacheStats(webapp.RequestHandler):
+	def get(self):
+		stats = memcache.get_stats()
+		self.response.out.write("<html><body>")
+		self.response.out.write("<b>Cache Hits:%s</b><br />" % stats['hits'])
+		self.response.out.write("<b>Cache Misses:%s</b><br />" % stats['misses'])
+		self.response.out.write("</body></html>")
 
 application = webapp.WSGIApplication(
                                      [('/', Index),
@@ -262,17 +272,25 @@ application = webapp.WSGIApplication(
 									  ('/results', ResultHistory),
 									  ('/results/detail', ResultDetail),
 									  ('/admin', Admin),
-									  ('/admin/rebuild_winloss', BuildWinLoss)],
+									  ('/admin/rebuild_winloss', BuildWinLoss),
+									  ('/admin/memcache', MemCacheStats)],
                                      debug=True)
 
 def get_team_groups(teams):
-	team_groups = { }
-	for team in teams:
-		if not team.leader in team_groups:
-			team_groups[team.leader] = []
-		team_groups[team.leader].append(team)
+	
+	team_groups = memcache.get("team_groups")
+	if team_groups is not None:
+		return team_groups
+	else:
+		team_groups = { }
+		for team in teams:
+			if not team.leader in team_groups:
+				team_groups[team.leader] = []
+			team_groups[team.leader].append(team)
 		
-	return [team_groups[k] for k in sorted(team_groups.keys(), lambda x,y: cmp(x.name, y.name))]
+		team_groups = [team_groups[k] for k in sorted(team_groups.keys(), lambda x,y: cmp(x.name, y.name))]
+		memcache.add("team_groups", team_groups)
+		return team_groups
 
 def update_stats(winner, loser):
 	existing = MatchupStatistics.gql("where team1 in (:1, :2) and team2 in (:2, :1)", winner.key(), loser.key())
