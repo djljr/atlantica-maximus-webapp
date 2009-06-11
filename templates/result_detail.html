@@ -4,7 +4,7 @@
 </head>
 <body>
 <div style="float:left">
-	<div>{{match.winner.leader.name}}<span class="tiny">{{match.winner.wins}}-{{match.winner.losses}}</span></div>
+	<div>{{match.winner.leader.name}}<span class="tiny">{{match.winner.wins|default:"0"}}-{{match.winner.losses|default:"0"}}</span></div>
 	<div class="wrapper">
 	{% for teammember in match.winner.teammember_set %}
 		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
@@ -13,7 +13,7 @@
 </div>
 <div style="float:left; font-weight:bold; padding-right: 10px;">def.</div>
 <div style="float:left">
-	<div>{{match.loser.leader.name}}<span class="tiny">{{match.loser.wins}}-{{match.loser.losses}}</span></div>
+	<div>{{match.loser.leader.name}}<span class="tiny">{{match.loser.wins|default:"0"}}-{{match.loser.losses|default:"0"}}</span></div>
 	<div class="wrapper">
 	{% for teammember in match.loser.teammember_set %}
 		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>

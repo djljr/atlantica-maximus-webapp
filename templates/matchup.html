@@ -10,7 +10,7 @@
 	<div style="display:inline">
 		<form action="/matchup/result" method="post">
 			<input type="hidden" name="match_key" value="{{matchup.key}}" />
-			<button type="submit" name="winner" value="{{matchup.team1.key}}">{{matchup.team1.leader.name}} <span class="tiny">({{matchup.team1.wins}}-{{matchup.team1.losses}})</span></button> vs. <button type="submit" name="winner" value="{{matchup.team2.key}}">{{matchup.team2.leader.name}}<span class="tiny">({{matchup.team2.wins}}-{{matchup.team2.losses}})</span></button>
+			<button type="submit" name="winner" value="{{matchup.team1.key}}">{{matchup.team1.leader.name}} <span class="tiny">({{matchup.team1.wins|default:"0"}}-{{matchup.team1.losses|default:"0"}})</span></button> vs. <button type="submit" name="winner" value="{{matchup.team2.key}}">{{matchup.team2.leader.name}}<span class="tiny">({{matchup.team2.wins|default:"0"}}-{{matchup.team2.losses|default:"0"}})</span></button>
 		</form>			
 	</div>
 	<div style="display:inline; margin-left: 50px;">
@@ -27,7 +27,7 @@
 {% for team_group in teams %}
 {% for team in team_group %}
 	<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
-	<div><input type="checkbox" name="versus" value="{{team.key}}" />{{team.leader.name}} <span class="tiny">{{team.wins}}-{{team.losses}}</span></div>
+	<div><input type="checkbox" name="versus" value="{{team.key}}" />{{team.leader.name}} <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span></div>
 	<div class="wrapper">
 	{% for teammember in team.teammember_set %}
 		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>

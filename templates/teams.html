@@ -70,7 +70,7 @@
 {% for team_group in teams %}
 {% for team in team_group %}
 	<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
-	<div>{{team.leader.name}}<span class="tiny">{{team.wins}}-{{team.losses}}</span><span class="tiny"><a href="/teams/delete?team={{team.key}}">Delete</a></span></div>
+	<div>{{team.leader.name}}<span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span><span class="tiny"><a href="/teams/delete?team={{team.key}}">Delete</a></span></div>
 	<div class="wrapper">
 	{% for teammember in team.teammember_set %}
 		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>

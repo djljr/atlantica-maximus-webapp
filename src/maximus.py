@@ -51,8 +51,10 @@ class BuildWinLoss(webapp.RequestHandler):
 			matchups.append(matchup_stats)
 		db.delete(matchups)
 		
+		total_count = 0
 		batch_count = batch.count()
 		while batch_count > 0:
+			total_count = total_count + batch_count
 			logging.info("stats batch of size %s", batch.count())
 			for match in batch:
 				update_stats(match.winner, match.loser)
@@ -61,7 +63,7 @@ class BuildWinLoss(webapp.RequestHandler):
 			batch = MatchResult.gql(query, last_key)
 			batch_count = batch.count()
 		
-		self.redirect("/admin")
+		self.redirect("/admin?match_count=%s" % total_count)
 		
 class Admin(webapp.RequestHandler):
 	def get(self):
@@ -123,7 +125,9 @@ class MatchupResult(webapp.RequestHandler):
 class CreateMatchup(webapp.RequestHandler):
 	def get(self):
 		teams = Team.all()
+		teams.order("-wins")
 		matches = Matchup.all()
+		matches.order("__key__")
 
 		model = { 'teams': get_team_groups(teams),
 				  'matches': matches }
