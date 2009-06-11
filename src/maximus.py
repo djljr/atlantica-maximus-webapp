@@ -16,6 +16,8 @@ class Mercenary(db.Model):
 
 class Team(db.Model):
 	leader = db.ReferenceProperty(Mercenary)
+	wins = db.IntegerProperty()
+	losses = db.IntegerProperty()
 
 class TeamMember(db.Model):
 	team = db.ReferenceProperty(Team)
@@ -30,10 +32,43 @@ class MatchResult(db.Model):
 	winner = db.ReferenceProperty(Team, collection_name="winner_set")
 	loser = db.ReferenceProperty(Team, collection_name="loser_set")
 
+class MatchupStatistics(db.Model):
+	team1 = db.ReferenceProperty(Team, collection_name="team1_stats_set")
+	team2 = db.ReferenceProperty(Team, collection_name="team2_stats_set")
+	team1_wins = db.IntegerProperty()
+	team2_wins = db.IntegerProperty()
 
-
-
-
+class BuildWinLoss(webapp.RequestHandler):
+	def post(self):
+		logging.info("Rebuilding win-loss records")
+		batch_size = 10
+		batch = MatchResult.gql("order by __key__ limit %s" % batch_size)
+		
+		query = "where __key__ > :1 order by __key__ limit %s" % batch_size
+		
+		matchups = []
+		for matchup_stats in MatchupStatistics.all():
+			matchups.append(matchup_stats)
+		db.delete(matchups)
+		
+		batch_count = batch.count()
+		while batch_count > 0:
+			logging.info("stats batch of size %s", batch.count())
+			for match in batch:
+				update_stats(match.winner, match.loser)
+						
+			last_key = batch.fetch(1, batch_count - 1)[0].key()
+			batch = MatchResult.gql(query, last_key)
+			batch_count = batch.count()
+		
+		self.redirect("/admin")
+		
+class Admin(webapp.RequestHandler):
+	def get(self):
+		model = { }
+		path=os.path.join(os.path.dirname(__file__), '../templates/admin.html')
+		self.response.out.write(template.render(path, model))
+	
 class Index(webapp.RequestHandler):
 	def get(self):
 		path=os.path.join(os.path.dirname(__file__), '../templates/index.html')
@@ -81,6 +116,8 @@ class MatchupResult(webapp.RequestHandler):
 			result.loser = match.team1
 		else:
 			logging.error("could not determine winner key: %s" % winner_key)
+			
+		update_stats(result.winner, result.loser)
 		result.put()
 		match.delete()
 		self.redirect('/matchup')
@@ -215,7 +252,9 @@ application = webapp.WSGIApplication(
 									  ('/matchup/delete', MatchupDelete),
 									  ('/matchup/result', MatchupResult),
 									  ('/results', ResultHistory),
-									  ('/results/detail', ResultDetail)],
+									  ('/results/detail', ResultDetail),
+									  ('/admin', Admin),
+									  ('/admin/rebuild_winloss', BuildWinLoss)],
                                      debug=True)
 
 def get_team_groups(teams):
@@ -227,6 +266,39 @@ def get_team_groups(teams):
 		
 	return [team_groups[k] for k in sorted(team_groups.keys(), lambda x,y: cmp(x.name, y.name))]
 
+def update_stats(winner, loser):
+	existing = MatchupStatistics.gql("where team1 in (:1, :2) and team2 in (:2, :1)", winner.key(), loser.key())
+	if existing.count() == 0:
+	    newStats = MatchupStatistics()
+	    newStats.team1 = winner
+	    newStats.team2 = loser
+	    newStats.team1_wins = 1
+	    newStats.team2_wins = 0
+	    newStats.put()
+	    
+	    newStats.team1.wins = 1
+	    newStats.team1.losses = 0
+	    newStats.team2.wins = 0
+	    newStats.team2.losses = 1
+	    
+	    db.put([newStats.team1, newStats.team2])
+	    
+	elif existing.count() == 1:
+		oldStats = existing.fetch(1)[0]
+		if oldStats.team1.key() == winner.key():
+			oldStats.team1_wins = oldStats.team1_wins + 1
+			oldStats.team1.wins = oldStats.team1.wins + 1
+			oldStats.team2.losses = oldStats.team2.losses + 1
+		else:
+			oldStats.team2_wins = oldStats.team2_wins + 1
+			oldStats.team2.wins = oldStats.team2.wins + 1
+			oldStats.team1.losses = oldStats.team1.losses + 1
+			
+		db.put([oldStats.team1, oldStats.team2])
+		
+	else:
+		logging.error("unexpected state: %s matchup statistics for the same team pair (expected 1)" % existing.count())
+		
 def main():
   run_wsgi_app(application)
 
