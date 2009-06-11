@@ -72,7 +72,6 @@ class Admin(webapp.RequestHandler):
 class Index(webapp.RequestHandler):
 	def get(self):
 		path=os.path.join(os.path.dirname(__file__), '../templates/index.html')
-		logging.info(path)
 		self.response.out.write(template.render(path, {}))
 
 class ResultDetail(webapp.RequestHandler):
@@ -105,7 +104,6 @@ class MatchupResult(webapp.RequestHandler):
 		match_key = db.Key(self.request.get('match_key'))
 		match = Matchup.get(match_key)
 
-		logging.info(self.request.get_all('winner'))
 		winner_key = db.Key(self.request.get('winner'))
 		result = MatchResult()
 		if winner_key == match.team1.key():
@@ -159,20 +157,15 @@ class DeleteTeam(webapp.RequestHandler):
 		
 	def post(self):
 		toreassign_string = self.request.get("reassign")
-		logging.info("toreassign: %s" % toreassign_string)
 		if toreassign_string:
 			todelete_key = db.Key(self.request.get("todelete"))
 			toreassign_key = db.Key(toreassign_string)
-			logging.info("todelete: %s" % todelete_key)
 			
 			if todelete_key != toreassign_key:
 				todelete = Team.get(todelete_key)
 				toreassign = Team.get(toreassign_key)
-				logging.info("keys were not the same")
 				
-				logging.info("leaders: %s == %s", todelete.leader.key(), toreassign.leader.key())
 				if todelete.leader.key() == toreassign.leader.key():
-					logging.info("leaders were the same")
 					won_matches = MatchResult.gql("where winner = :1", todelete)
 					lost_matches = MatchResult.gql("where loser = :1", todelete)
 					for match in won_matches:
@@ -274,14 +267,13 @@ def update_stats(winner, loser):
 	    newStats.team2 = loser
 	    newStats.team1_wins = 1
 	    newStats.team2_wins = 0
-	    newStats.put()
 	    
 	    newStats.team1.wins = 1
 	    newStats.team1.losses = 0
 	    newStats.team2.wins = 0
 	    newStats.team2.losses = 1
 	    
-	    db.put([newStats.team1, newStats.team2])
+	    db.put([newStats, newStats.team1, newStats.team2])
 	    
 	elif existing.count() == 1:
 		oldStats = existing.fetch(1)[0]
@@ -294,7 +286,7 @@ def update_stats(winner, loser):
 			oldStats.team2.wins = oldStats.team2.wins + 1
 			oldStats.team1.losses = oldStats.team1.losses + 1
 			
-		db.put([oldStats.team1, oldStats.team2])
+		db.put([oldStats, oldStats.team1, oldStats.team2])
 		
 	else:
 		logging.error("unexpected state: %s matchup statistics for the same team pair (expected 1)" % existing.count())
