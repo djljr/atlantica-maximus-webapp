@@ -143,7 +143,7 @@ class CreateMatchup(webapp.RequestHandler):
 	def get(self):
 		matches = Matchup.all()
 
-		model = { 'teams': get_team_groups(teams),
+		model = { 'teams': get_team_groups(),
 				  'matches': matches }
 		path=os.path.join(os.path.dirname(__file__), '../templates/matchup.html')
 		self.response.out.write(template.render(path, model))
@@ -203,7 +203,7 @@ class CreateTeam(webapp.RequestHandler):
 		heroes = Mercenary.gql("where type = 'Hero'")
 		pawns = Mercenary.gql("where type = 'Pawn'")
 
-		model = { 'heroes': heroes, 'pawns': pawns, 'mercrange': range(1,7), 'teams': get_team_groups(teams) }
+		model = { 'heroes': heroes, 'pawns': pawns, 'mercrange': range(1,7), 'teams': get_team_groups() }
 		path=os.path.join(os.path.dirname(__file__), '../templates/teams.html')
 		self.response.out.write(template.render(path, model))
 	def post(self):
