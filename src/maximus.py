@@ -141,7 +141,6 @@ class MatchupResult(webapp.RequestHandler):
 
 class CreateMatchup(webapp.RequestHandler):
 	def get(self):
-		teams = Team.all()
 		matches = Matchup.all()
 
 		model = { 'teams': get_team_groups(teams),
@@ -201,8 +200,6 @@ class DeleteTeam(webapp.RequestHandler):
 	
 class CreateTeam(webapp.RequestHandler):
 	def get(self):
-		teams = Team.all()
-
 		heroes = Mercenary.gql("where type = 'Hero'")
 		pawns = Mercenary.gql("where type = 'Pawn'")
 
@@ -279,12 +276,13 @@ application = webapp.WSGIApplication(
 									  ('/admin/memcache', MemCacheStats)],
                                      debug=True)
 
-def get_team_groups(teams):
+def get_team_groups():
 	
 	team_groups = memcache.get("team_groups")
 	if team_groups is not None:
 		return team_groups
 	else:
+		teams = Team.all()
 		team_groups = { }
 		for team in teams:
 			if not team.leader in team_groups:
