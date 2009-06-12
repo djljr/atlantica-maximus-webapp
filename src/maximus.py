@@ -77,6 +77,7 @@ class BuildWinLoss(webapp.RequestHandler):
 			batch_count = batch.count()
 			logging.info("new batch size: %s", batch_count)
 		
+		memcache.delete("team_groups")
 		self.redirect("/admin?match_count=%s&created=%s&updated=%s" % (total_count, total_create, total_update))
 		
 class Admin(webapp.RequestHandler):
@@ -134,6 +135,8 @@ class MatchupResult(webapp.RequestHandler):
 		update_stats(result.winner, result.loser)
 		result.put()
 		match.delete()
+		
+		memcache.delete("team_groups")
 		self.redirect('/matchup')
 
 class CreateMatchup(webapp.RequestHandler):
