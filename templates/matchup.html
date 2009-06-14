@@ -1,6 +1,8 @@
 <html>
 <head>
 <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+<script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/js/team_select.js"></script>
 </head>
 <body>
 <fieldset>
@@ -26,13 +28,8 @@
 <input type="submit" value="Create Matchup" />
 {% for team_group in teams %}
 {% for team in team_group %}
-	<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
-	<div><input type="checkbox" name="versus" value="{{team.key}}" />{{team.leader.name}} <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span></div>
-	<div class="wrapper">
-	{% for teammember in team.teammember_set %}
-		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
-	{% endfor %}
-	</div>
+	<div style="float:left" onclick="javascript:toggleSelectTeam('{{team.key}}')">
+	{% include "blocks/team_box.html" %}
 	</div>
 {% endfor %}
 {% endfor %}

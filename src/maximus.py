@@ -39,6 +39,30 @@ class MatchupStatistics(db.Model):
 	team1_wins = db.IntegerProperty()
 	team2_wins = db.IntegerProperty()
 
+class Tournament(db.Model):
+	created = db.DateTimeProperty()
+	current_round = db.IntegerProperty()
+	completed = db.BooleanProperty()
+
+class TournamentTeam(db.Model):
+	tournament = db.ReferenceProperty(Tournament, collection_name="tourney_team_set")
+	team = db.ReferenceProperty(Team, collection_name="participant_set")
+	
+class TournamentMatchup(db.Model):
+	tournament = db.ReferenceProperty(Tournament, collection_name="tourney_match_set")
+	matchup = db.ReferenceProperty(Matchup)
+	round = db.IntegerProperty()
+	
+
+class CreateTournament(webapp.RequestHandler):
+	def get(self):
+		model = { 'teams': get_team_groups() }
+		path=os.path.join(os.path.dirname(__file__), '../templates/tournament.html')
+		self.response.out.write(template.render(path, model))
+		
+	def post(self):
+		pass
+
 class BuildWinLoss(webapp.RequestHandler):
 	def post(self):
 		logging.info("Rebuilding win-loss records")
@@ -144,7 +168,8 @@ class CreateMatchup(webapp.RequestHandler):
 		matches = Matchup.all()
 
 		model = { 'teams': get_team_groups(),
-				  'matches': matches }
+				  'matches': matches,
+				  'check_team_box': True }
 		path=os.path.join(os.path.dirname(__file__), '../templates/matchup.html')
 		self.response.out.write(template.render(path, model))
 	def post(self):
@@ -266,6 +291,7 @@ application = webapp.WSGIApplication(
 									  ('/mercs', CreateMerc),
 									  ('/teams', CreateTeam),
 									  ('/teams/delete', DeleteTeam),
+									  ('/tournament', CreateTournament),
 									  ('/matchup', CreateMatchup),
 									  ('/matchup/delete', MatchupDelete),
 									  ('/matchup/result', MatchupResult),

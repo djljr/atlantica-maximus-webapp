@@ -1,0 +1,17 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+<form method="post">
+<input type="submit" value="Create Tournament" />
+{% with True as check %}
+{% for team_group in teams %}
+	{% for team in team_group %}
+		{% include "blocks/team_box.html" %}
+	{% endfor %}
+{% endfor %}
+{% endwith %}
+</form>
+</body>
+</html>
