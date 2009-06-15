@@ -1,0 +1,14 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+{% with match.winner as team %}
+	{% include "../blocks/team_box.html" %}
+{% endwith %}
+<div style="float:left; font-weight:bold; padding-right: 10px;">def.</div>
+{% with match.loser as team %}
+	{% include "../blocks/team_box.html" %}
+{% endwith %}
+</body>
+</html>

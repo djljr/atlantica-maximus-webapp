@@ -1,0 +1,38 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+<script type="text/javascript" src="/js/MochiKit/Base.js"></script>
+<script type="text/javascript" src="/js/MochiKit/DOM.js"></script>
+<script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/js/team_select.js"></script>
+<script type="text/javascript">
+function showError(e)
+{
+	var errorDiv = $('#error')[0];
+	errorDiv.innerHTML = e;
+}
+</script>
+</head>
+<body>
+<div id="error" class="error"></div>
+<h2>Bracket</h2>
+<div style="position:relative">
+<div style="top:0; left:0">
+	{% for round in matches %}
+		{% for match in round %}
+			<span>{{match}}</span>
+		{% endfor %}
+	{% endfor %}
+</div>
+</div>
+<h2>Available Teams</h2>
+<form method="post">
+<button type="submit">Create Match</button>
+{% for team in teams %}
+	<div style="float:left" onclick="javascript:toggleSelectTeam('{{team.key}}')">
+		<input id="select_{{team.key}}" type="hidden" name="versus" />
+		{% include "../blocks/team_box.html" %}
+	</div>
+{% endfor %}
+</body>
+</html>

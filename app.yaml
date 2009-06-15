@@ -1,0 +1,14 @@
+application: erenda-maximus
+version: 4
+runtime: python
+api_version: 1
+
+handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /js
+  static_dir: js
+  
+- url: /.*
+  script: maximus.py

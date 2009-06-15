@@ -1,0 +1,10 @@
+<div style="float:left" class="{{team.leader.name|slugify}}" id="{{team.key}}">
+	<div>
+		{{team.leader.name}} <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span>
+	</div>
+	<div class="wrapper">
+	{% for teammember in team.teammember_set %}
+		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+	{% endfor %}
+	</div>
+</div>

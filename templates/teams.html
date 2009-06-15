@@ -1,0 +1,76 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+<form method="post">
+	<div>Hero:<select name="hero">
+	{% for merc in heroes %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<div>Pawns:</div>
+	<div><select name="pawn1">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn2">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn3">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<div><select name="pawn4">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn5">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn6">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<div><select name="pawn7">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn8">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select>
+	<select name="pawn9">
+	<option value=""></option>
+	{% for merc in pawns %}
+		<option value="{{merc.name}}">{{merc.name}}</option>
+	{% endfor %}
+	</select></div>
+	<input type="submit" value="Submit" />
+</form>
+
+{% for team_group in teams %}
+{% for team in team_group %}
+	{% include "blocks/team_box.html" %}
+{% endfor %}
+{% endfor %}
+</html>
+</body>

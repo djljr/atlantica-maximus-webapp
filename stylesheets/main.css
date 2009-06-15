@@ -1,0 +1,42 @@
+
+form { display: inline; }
+
+.wrapper { position: relative; width:230px; height:80px; padding:3px; }
+
+.box {
+	position: absolute;
+	width:75px;
+	height:25px;
+	border:1px solid black;
+	font-family: Times,
+             "New Century Schoolbook",
+             "Nimbus Roman No9 L",
+             serif;
+	font-size: 10pt;
+}
+
+.pos1 { left: 0px; top: 0px; }
+.pos2 { left: 75px; top: 0px; }
+.pos3 { left: 150px; top: 0px; }
+.pos4 { left: 0px; top: 25px; }
+.pos5 { left: 75px; top: 25px; }
+.pos6 { left: 150px; top: 25px; }
+.pos7 { left: 0px; top: 50px; }
+.pos8 { left: 75px; top: 50px; }
+.pos9 { left: 150px; top: 50px; }
+
+.tiny { font-size: 8pt; padding-left: 10px; }
+
+.beatrice { background-color: #555; color: #fff }
+.alexandra { background-color: #dff }
+.alkinarpay { background-color: #fdf }
+.jeanne { background-color: #ffd; }
+.raphael { background-color: #ddf; }
+.saijo { background-color: #dfd; }
+.michelangelo { background-color: #fdd}
+.hasard { background-color: #ddd; }
+.chuk-yeon { background-color: #fff; }
+.cleopatra { background-color: #000; color: #fff}
+
+/* this has to be AFTER the merc classes so it cascades properly */
+.highlight { background-color: yellow; }
