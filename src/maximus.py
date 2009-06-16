@@ -19,6 +19,7 @@ class Team(db.Model):
 	leader = db.ReferenceProperty(Mercenary)
 	wins = db.IntegerProperty()
 	losses = db.IntegerProperty()
+	notes = db.StringProperty()
 
 class TeamMember(db.Model):
 	team = db.ReferenceProperty(Team)
@@ -197,7 +198,24 @@ class DeleteTeam(webapp.RequestHandler):
 					
 		self.redirect('/teams') 
 		
+class EditTeam(webapp.RequestHandler):
+	def get(self):
+		team_key = db.Key(self.request.get("team"))
+		team = db.get(team_key)
+		
+		model = { 'team': team }
+		path=os.path.join(os.path.dirname(__file__), '../templates/edit_team.html')
+		self.response.out.write(template.render(path, model))
 	
+	def post(self):
+		new_notes = self.request.get("notes")
+		team_key = db.Key(self.request.get("team"))
+		
+		team = db.get(team_key)
+		team.notes = new_notes
+		db.put(team)
+		self.redirect('/teams')
+		
 class CreateTeam(webapp.RequestHandler):
 	def get(self):
 		heroes = Mercenary.gql("where type = 'Hero'")
@@ -266,6 +284,7 @@ application = webapp.WSGIApplication(
 									  ('/mercs', CreateMerc),
 									  ('/teams', CreateTeam),
 									  ('/teams/delete', DeleteTeam),
+									  ('/teams/edit', EditTeam),
 									  ('/matchup', CreateMatchup),
 									  ('/matchup/delete', MatchupDelete),
 									  ('/matchup/result', MatchupResult),

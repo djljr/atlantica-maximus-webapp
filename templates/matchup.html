@@ -27,7 +27,7 @@
 {% for team_group in teams %}
 {% for team in team_group %}
 	<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
-	<div><input type="checkbox" name="versus" value="{{team.key}}" />{{team.leader.name}} <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span></div>
+	<div><input type="checkbox" name="versus" value="{{team.key}}" /><a href="/teams/edit?team={{team.key}}">{{team.leader.name}}</a> <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span></div>
 	<div class="wrapper">
 	{% for teammember in team.teammember_set %}
 		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
