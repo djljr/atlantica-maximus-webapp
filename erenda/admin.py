@@ -64,7 +64,7 @@ class DeleteTeam(webapp.RequestHandler):
 		team = db.get(team_key)
 		teams = Team.gql("where leader = :1", team.leader)
 		
-		model = { 'todelete': team, 'teams': get_team_groups(teams) }
+		model = { 'todelete': team, 'teams': get_team_groups() }
 		path=os.path.join(os.path.dirname(__file__), '../templates/delete_team.html')
 		self.response.out.write(template.render(path, model))
 		
