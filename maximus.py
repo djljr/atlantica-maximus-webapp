@@ -3,7 +3,7 @@
 import cgi
 import os
 
-from erenda.tournament import TournamentMatchups, CreateTournament
+from erenda.tournament import TournamentMatchups, CreateTournament, TournamentMatchResult
 from erenda.matches import ResultDetail, ResultHistory, MatchupDelete, MatchupResult, CreateMatchup
 from erenda.admin import Admin, DeleteTeam, BuildWinLoss, CreateTeam, CreateMerc, MemCacheStats
 
@@ -23,6 +23,7 @@ application = webapp.WSGIApplication(
 									  ('/teams/delete', DeleteTeam),
 									  ('/tournament', CreateTournament),
 									  ('/tournament/matchups', TournamentMatchups),
+									  ('/tournament/matchups/result',TournamentMatchResult),
 									  ('/matchup', CreateMatchup),
 									  ('/matchup/delete', MatchupDelete),
 									  ('/matchup/result', MatchupResult),

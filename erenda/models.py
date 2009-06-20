@@ -31,7 +31,6 @@ class MatchupStatistics(db.Model):
 
 class Tournament(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
-    current_round = db.IntegerProperty()
     completed = db.BooleanProperty()
     winner = db.ReferenceProperty(Team, collection_name="tourney_winner_set")
 
@@ -43,5 +42,6 @@ class TournamentTeam(db.Model):
 class TournamentMatchup(db.Model):
     tournament = db.ReferenceProperty(Tournament, collection_name="tourney_match_set")
     matchup = db.ReferenceProperty(Matchup)
+    result = db.ReferenceProperty(MatchResult)
     round = db.IntegerProperty()
     index = db.IntegerProperty()

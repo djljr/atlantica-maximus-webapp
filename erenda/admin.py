@@ -7,7 +7,7 @@ from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
-from .models import MatchResult, MatchupStatistics, Mercenary, Team
+from .models import MatchResult, MatchupStatistics, Mercenary, Team, TeamMember
 from .maximus_utils import update_stats, get_team_groups
 
 class Admin(webapp.RequestHandler):

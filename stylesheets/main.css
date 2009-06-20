@@ -39,4 +39,6 @@ form { display: inline; }
 .cleopatra { background-color: #000; color: #fff}
 
 /* this has to be AFTER the merc classes so it cascades properly */
-.highlight { background-color: yellow; }
+.highlight { background-color: yellow; color: black; }
+
+.clear { clear: both }

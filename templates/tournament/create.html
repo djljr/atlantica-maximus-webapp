@@ -14,9 +14,15 @@ function showError(e)
 </script>
 </head>
 <body>
+<fieldset>
+<legend>In Progress</legend>
+{% for tourney in inprogress %}
+<a href="/tournament/matchups?tournament={{tourney.key}}">{{tourney.created}}</a>
+{% endfor %}
+</fieldset>
 <div id="error" class="error"></div>
 <form method="post">
-<button type="submit">
+<button type="submit" onclick="javascript: return postSelectedTeams(8, 8, showError)">
 	Create Tournament 
 </button>
 {% for team_group in teams %}
@@ -28,5 +34,12 @@ function showError(e)
 	{% endfor %}
 {% endfor %}
 </form>
+<div class="clear"></div>
+<fieldset>
+<legend>Finished</legend>
+{% for tourney in finished %}
+<a href="/tournament/matchups?tournament={{tourney.key}}">{{tourney.created}}</a>
+{% endfor %}
+</fieldset>
 </body>
 </html>

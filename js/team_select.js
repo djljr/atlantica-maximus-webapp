@@ -1,4 +1,4 @@
-selected = { };
+var selected = { };
 
 function toggleSelectTeam(team_key)
 {
@@ -17,22 +17,22 @@ function toggleSelectTeam(team_key)
 	}
 }
 
-function postSelectedTeams()
+function postSelectedTeams(minCount, maxCount, errorCallback)
 {
 	var teams = getSelectedTeams()
 	var teamCount = teams.length;
 	if(teamCount < minCount) 
 	{
 		errorCallback("You must select at least " + minCount + " teams to continue (you selected " + teamCount + ")");
-		return;
+		return false;
 	}
 	else if(teamCount > maxCount)
 	{
 		errorCallback("You can have at most " + maxCount + " teams selected (you selected " + teamCount + ")");
-		return;
+		return false;
 	}
 	
-	$.post(url, { "team_data": teams }, function () { location.href = redirectUrl }, "json");
+	return true;
 }
 
 function countSelectedTeams()
