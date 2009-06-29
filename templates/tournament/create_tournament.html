@@ -1,0 +1,63 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+<script type="text/javascript" src="/js/MochiKit/Base.js"></script>
+<script type="text/javascript" src="/js/MochiKit/DOM.js"></script>
+<script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/js/team_select.js"></script>
+<script type="text/javascript">
+function showError(e)
+{
+	var errorDiv = $('#error')[0];
+	errorDiv.innerHTML = e;
+}
+function clear()
+{
+	$("input:hidden").each(
+		function() { 
+			this.value = ""; 
+		}
+	);
+}
+addLoadEvent(clear);
+</script>
+</head>
+<body>
+<fieldset>
+<legend>In Progress</legend>
+{% for tourney in in_progress %}
+<a href="/tournament/matchups?tournament={{tourney.id}}">{{tourney.created}}</a>
+{% endfor %}
+</fieldset>
+<div id="error" class="error"></div>
+<form method="post">
+<button type="submit" onclick="javascript: return postSelectedTeams(8, 8, showError)">
+	Create Tournament 
+</button>
+{% for team_group in teams %}
+	{% for team in team_group %}
+	<div style="float:left" onclick="javascript:toggleSelectTeam('{{team.id}}')">	
+		<input id="select_{{team.id}}" type="hidden" name="participant" />
+		<div style="float:left" class="{{team.leader.name|slugify}}" id="{{team.id}}">
+			<div>
+				{{team.leader.name}} <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span>
+			</div>
+			<div class="wrapper">
+			{% for teammember in team.teammember_set.all %}
+				<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+{% endfor %}
+</form>
+<div class="clear"></div>
+<fieldset>
+<legend>Finished</legend>
+{% for tourney in finished %}
+<a href="/tournament/matchups?tournament={{tourney.id}}">{{tourney.created}}</a>
+{% endfor %}
+</fieldset>
+</body>
+</html>

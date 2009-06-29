@@ -41,14 +41,13 @@ class MatchupStatistics(models.Model):
 
 class Tournament(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    current_round = models.IntegerField()
     completed = models.BooleanField()
-    winner = models.ForeignKey(Team, related_name="tourney_winner_set")
+    winner = models.ForeignKey(Team, related_name="tourney_winner_set", blank=True, null=True)
 
 class TournamentTeam(models.Model):
     tournament = models.ForeignKey(Tournament, related_name="tourney_team_set")
     team = models.ForeignKey(Team, related_name="participant_set")
-    matchup_index = models.IntegerField()
+    matchup_index = models.IntegerField(blank=True, null=True)
 
 class TournamentMatchup(models.Model):
     tournament = models.ForeignKey(Tournament, related_name="tourney_match_set")

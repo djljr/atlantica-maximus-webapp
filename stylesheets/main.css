@@ -27,7 +27,9 @@ form { display: inline; }
 
 .tiny { font-size: 8pt; padding-left: 10px; }
 
+a { color: #00f }
 .beatrice { background-color: #555; color: #fff }
+.beatrice a { color: #aaf; }
 .alexandra { background-color: #dff }
 .alkinarpay { background-color: #fdf }
 .jeanne { background-color: #ffd; }
@@ -37,6 +39,7 @@ form { display: inline; }
 .hasard { background-color: #ddd; }
 .chuk-yeon { background-color: #fff; }
 .cleopatra { background-color: #000; color: #fff}
+.cleopatra a { color: #aaf; }
 
 /* this has to be AFTER the merc classes so it cascades properly */
 .highlight { background-color: yellow; color: black; }

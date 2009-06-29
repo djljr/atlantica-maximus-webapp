@@ -1,0 +1,23 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+
+<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
+<div>{{team.leader.name}}</div>
+<div class="wrapper">
+{% for teammember in team.teammember_set.all %}
+	<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+{% endfor %}
+</div>
+</div>
+<div style="clear: both"></div>	
+<form method="post">
+<label for="notes">Notes:</label><br />
+<textarea name="notes" cols="90" rows="15">{{team.notes|default:""}}</textarea><br />
+<input type="submit" value="Save Notes" />
+<input type="hidden" name="team" value="{{team.id}}" />
+</form>
+</body>
+</html>
