@@ -1,4 +1,4 @@
-from test_site.maximus.models import Mercenary, Team
+from maximus.models import Mercenary, Team
 from django.contrib import admin
 
 admin.site.register(Mercenary)

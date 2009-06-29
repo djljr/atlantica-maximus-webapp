@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, loader
 from django.db import transaction
 
-from test_site.maximus.models import Mercenary, Team, TeamMember, Tournament, TournamentTeam, TournamentMatchup, Matchup
+from maximus.models import Mercenary, Team, TeamMember, Tournament, TournamentTeam, TournamentMatchup, Matchup
 
 def index(request):
     return HttpResponse("Hello, world. You're at the index.")
