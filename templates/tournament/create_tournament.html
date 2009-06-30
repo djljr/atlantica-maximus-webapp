@@ -23,6 +23,7 @@ addLoadEvent(clear);
 </script>
 </head>
 <body>
+<a href="#finished">show completed</a>
 <fieldset>
 <legend>In Progress</legend>
 {% for tourney in in_progress %}
@@ -54,6 +55,7 @@ addLoadEvent(clear);
 </form>
 <div class="clear"></div>
 <fieldset>
+<a name="finished"></a>
 <legend>Finished</legend>
 {% for tourney in finished %}
 <a href="/app/tournament/matchups?tournament={{tourney.id}}">{{tourney.created}}</a>
