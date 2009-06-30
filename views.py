@@ -7,7 +7,9 @@ from django.db.models import Q
 from maximus.models import Mercenary, Team, TeamMember, Tournament, TournamentTeam, TournamentMatchup, Matchup, MatchupStatistics, MatchResult
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the index.")
+    model = Context({})
+    t = loader.get_template('index.html')
+    return HttpResponse(t.render(model))
 
 def create_team(request):         
     def get():

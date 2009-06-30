@@ -42,6 +42,9 @@ addLoadEvent(clear);
 		<div style="float:left" class="{{team.leader.name|slugify}}" id="{{team.id}}">
 			<div>
 				{{team.leader.name}} <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span>
+				{% if team.notes %} 
+				<a href="/app/teams/edit?team={{team.id}}"><img src="/img/accessories-text-editor.png" width="12px" height="12px" border="0"></img></a>
+				{% endif %}
 			</div>
 			<div class="wrapper">
 			{% for teammember in team.teammember_set.all %}
