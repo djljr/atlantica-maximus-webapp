@@ -62,7 +62,7 @@ def edit_team(request):
         team = Team.objects.get(id=team_id)
         team.notes = new_notes
         team.save()
-        return HttpResponseRedirect('/app/teams')
+        return HttpResponseRedirect('/app/teams/edit?team=%s' % team_id)
         
     if request.method == "POST":
         return post()
