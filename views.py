@@ -83,11 +83,8 @@ def create_tournament(request):
         tournament.completed = False
         
         tournament.save()
-        print request.POST.getlist('participant')
         for team_id in request.POST.getlist('participant'):
-            print "team " + team_id
             if team_id != "":
-                print team_id
                 team = Team.objects.get(id=team_id)
                 tourney_team = TournamentTeam()
                 tourney_team.tournament = tournament
