@@ -26,8 +26,8 @@ class TeamMember(models.Model):
     location = models.IntegerField()
 
 class Matchup(models.Model):
-    team1 = models.ForeignKey(Team, related_name="team1_set")
-    team2 = models.ForeignKey(Team, related_name="team2_set")
+    team1 = models.ForeignKey(Team, related_name="team1_set", blank=True, null=True)
+    team2 = models.ForeignKey(Team, related_name="team2_set", blank=True, null=True)
 
 class MatchResult(models.Model):
     winner = models.ForeignKey(Team, related_name="winner_set")
@@ -51,6 +51,7 @@ class TournamentTeam(models.Model):
 
 class TournamentMatchup(models.Model):
     tournament = models.ForeignKey(Tournament, related_name="tourney_match_set")
-    matchup = models.ForeignKey(Matchup)
+    matchup = models.ForeignKey(Matchup, blank=True, null=True)
+    result = models.ForeignKey(MatchResult, blank=True, null=True)
     round = models.IntegerField()
     index = models.IntegerField()

@@ -28,12 +28,11 @@ addLoadEvent(clear);
 <div style="position:relative">
 <div style="top:0; left:0">
 	{% for round in matches %}
-	<div class="round{{forloop.counter}}">
+	<div class="round">
 		{% for match in round %}
 			{% if match.matchup %}
-			<span>
-			<form action="/tournament/matchups/result" method="post">
-				<input type="hidden" name="tournament_match_key" value="{{match.id}}" />
+			<span class="tourney_matchup">
+			<form action="/app/tournament/matchups/result?tournament_match_key={{match.id}}" method="post">
 				<button type="submit" name="winner" value="{{match.matchup.team1.id}}">{{match.matchup.team1.leader.name}}<span class="tiny">({{match.matchup.team1.wins|default:"0"}}-{{match.matchup.team1.losses|default:"0"}})</span></button> 
 					vs. 
 				<button type="submit" name="winner" value="{{match.matchup.team2.id}}">{{match.matchup.team2.leader.name}}<span class="tiny">({{match.matchup.team2.wins|default:"0"}}-{{match.matchup.team2.losses|default:"0"}})</span></button>
@@ -41,21 +40,22 @@ addLoadEvent(clear);
 			</span>
 			{% else %}
 				{% if match.result %}
-				<span>
-					<a href="/results/detail?match={{match.result.id}}">{{match.result.winner.leader.name}}<span class="tiny">({{match.result.winner.wins|default:"0"}}-{{match.result.winner.losses|default:"0"}})</span> def. {{match.result.loser.leader.name}} <span class="tiny">({{match.result.loser.wins|default:"0"}}-{{match.result.loser.losses|default:"0"}})</span></a>
+				<span class="tourney_matchup">
+					<a href="/app/results/detail?match={{match.result.id}}">{{match.result.winner.leader.name}}<span class="tiny">({{match.result.winner.wins|default:"0"}}-{{match.result.winner.losses|default:"0"}})</span> def. {{match.result.loser.leader.name}} <span class="tiny">({{match.result.loser.wins|default:"0"}}-{{match.result.loser.losses|default:"0"}})</span></a>
 				</span>				
 				{% endif %}
 			{% endif %}
 		{% endfor %}
+		<div class="clear"></div>
 	</div>
 	{% endfor %}
 </div>
 </div>
-{% if teams %}
+{% if pending_teams %}
 <h2>Available Teams</h2>
 <form method="post">
 <button type="submit">Create Match</button>
-{% for team in teams %}
+{% for team in pending_teams %}
 	<div style="float:left" onclick="javascript:toggleSelectTeam('{{team.id}}')">	
 		<input id="select_{{team.id}}" type="hidden" name="versus" />
 		<div style="float:left" class="{{team.leader.name|slugify}}" id="{{team.id}}">
@@ -71,6 +71,23 @@ addLoadEvent(clear);
 	</div>
 {% endfor %}
 </form>
+{% endif %}
+{% if teams %}
+<h2>Teams</h2>
+{% for team in teams %}
+	<div style="float:left">	
+		<div style="float:left" class="{{team.leader.name|slugify}}" id="{{team.id}}">
+			<div>
+				{{team.leader.name}} <span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span>
+			</div>
+			<div class="wrapper">
+			{% for teammember in team.teammember_set.all %}
+				<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+{% endfor %}
 {% endif %}
 </body>
 </html>

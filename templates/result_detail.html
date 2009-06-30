@@ -1,0 +1,28 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body>
+<div style="float:left" class="{{team.leader.name|slugify}}" id="{{team.key}}">
+	<div>
+		{{match.winner.leader.name}} <span class="tiny">{{match.winner.wins|default:"0"}}-{{match.winner.losses|default:"0"}}</span>
+	</div>
+	<div class="wrapper">
+	{% for teammember in match.winner.teammember_set %}
+		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+	{% endfor %}
+	</div>
+</div>
+<div style="float:left; font-weight:bold; padding-right: 10px;">def.</div>
+<div style="float:left" class="{{team.leader.name|slugify}}" id="{{team.key}}">
+	<div>
+		{{match.loser.leader.name}} <span class="tiny">{{match.loser.wins|default:"0"}}-{{match.loser.losses|default:"0"}}</span>
+	</div>
+	<div class="wrapper">
+	{% for teammember in match.loser.teammember_set %}
+		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
+	{% endfor %}
+	</div>
+</div>
+</body>
+</html>

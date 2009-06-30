@@ -26,7 +26,7 @@ addLoadEvent(clear);
 <fieldset>
 <legend>In Progress</legend>
 {% for tourney in in_progress %}
-<a href="/tournament/matchups?tournament={{tourney.id}}">{{tourney.created}}</a>
+<a href="/app/tournament/matchups?tournament={{tourney.id}}">{{tourney.created}}</a>
 {% endfor %}
 </fieldset>
 <div id="error" class="error"></div>
@@ -56,7 +56,7 @@ addLoadEvent(clear);
 <fieldset>
 <legend>Finished</legend>
 {% for tourney in finished %}
-<a href="/tournament/matchups?tournament={{tourney.id}}">{{tourney.created}}</a>
+<a href="/app/tournament/matchups?tournament={{tourney.id}}">{{tourney.created}}</a>
 {% endfor %}
 </fieldset>
 </body>

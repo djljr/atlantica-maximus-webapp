@@ -45,3 +45,13 @@ a { color: #00f }
 .highlight { background-color: yellow; color: black; }
 
 .clear { clear: both }
+
+.round {
+	text-align: center;
+	margin: 20px auto;
+}
+.tourney_matchup {
+	text-align:center;
+	width: 23%;
+	margin: 0 30px;
+}

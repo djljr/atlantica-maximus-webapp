@@ -71,10 +71,10 @@
 {% for team in team_group %}
 	<div style="float:left" class="{{team.leader.name|lower|cut:" "}}">
 	<div>
-		{% if team.notes %} {{team.leader.name}} <a href="/teams/edit?team={{team.id}}"><span class="tiny">note</span></a> 
-		{% else %} <a href="/teams/edit?team={{team.id}}"> {{team.leader.name}}</a>
+		{% if team.notes %} {{team.leader.name}} <a href="/app/teams/edit?team={{team.id}}"><span class="tiny">note</span></a> 
+		{% else %} <a href="/app/teams/edit?team={{team.id}}"> {{team.leader.name}}</a>
 		{% endif %}	
-	<span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span><span class="tiny"><a href="/teams/delete?team={{team.id}}">Delete</a></span></div>
+	<span class="tiny">{{team.wins|default:"0"}}-{{team.losses|default:"0"}}</span><span class="tiny"><a href="/app/teams/delete?team={{team.id}}">Delete</a></span></div>
 	<div class="wrapper">
 	{% for teammember in team.teammember_set.all %}
 		<div class="box pos{{teammember.location}}">{{ teammember.merc.name }}</div>
